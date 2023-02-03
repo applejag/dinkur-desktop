@@ -1,4 +1,4 @@
-module changeme
+module github.com/jilleJr/dinkur-desktop
 
 go 1.18
 
