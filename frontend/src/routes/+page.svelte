@@ -1,12 +1,23 @@
 <script lang="ts">
-	import { Greet } from '$lib/wailsjs/go/main/App';
+	import { ConnectDinkur, GetActiveEntry } from '$lib/wailsjs/go/main/App';
 	import logo from '../assets/images/dinkur-large-512.svg';
 
 	let resultText: string = 'Please enter your name below 👇';
-	let name: string;
+	let serverAddr: string = 'localhost:59122';
 
-	async function greet(): Promise<void> {
-		resultText = await Greet(name);
+	async function connectToDinkur(): Promise<void> {
+		try {
+			await ConnectDinkur(serverAddr);
+			resultText = `Successfully connected to ${serverAddr}`;
+			let entry = await GetActiveEntry();
+			if (!entry) {
+				resultText = `No active entry.`;
+			} else {
+				resultText = `Active entry: #${entry.id} '${entry.name}', since: ${entry.start}`;
+			}
+		} catch (err) {
+			resultText = `Error: ${err}`;
+		}
 	}
 </script>
 
@@ -14,9 +25,10 @@
 	<img alt="Dinkur logo" id="logo" src={logo} />
 	<div class="result" id="result">{resultText}</div>
 	<div class="input-box" id="input">
-		<form on:submit|preventDefault={greet}>
-			<input autocomplete="off" bind:value={name} class="input" id="name" type="text" />
-			<button type="submit" class="btn">Greet</button>
+		<form on:submit|preventDefault={connectToDinkur}>
+			<label for="serverAddr">Server address:</label>
+			<input id="serverAddr" bind:value={serverAddr} class="input" type="text" />
+			<button type="submit" class="btn">Connect</button>
 		</form>
 	</div>
 </main>
@@ -48,7 +60,6 @@
 	}
 
 	.input-box .btn {
-		width: 60px;
 		height: 30px;
 		line-height: 30px;
 		border-radius: 3px;
