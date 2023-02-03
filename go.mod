@@ -1,6 +1,6 @@
 module github.com/jilleJr/dinkur-desktop
 
-go 1.18
+go 1.20
 
 require github.com/wailsapp/wails/v2 v2.3.1
 
