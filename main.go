@@ -18,8 +18,8 @@ func main() {
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:  "dinkur-desktop",
-		Width:  1024,
-		Height: 768,
+		Width:  480,
+		Height: 360,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

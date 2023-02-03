@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 )
 
 // App struct
@@ -23,5 +24,16 @@ func (a *App) startup(ctx context.Context) {
 
 // Greet returns a greeting for the given name
 func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
+	return fmt.Sprintf("Hello %s, It's crazy time!", name)
+}
+
+type MyThing struct {
+	TimeStr string `json:"time_str"`
+}
+
+// Greet returns a greeting for the given name
+func (a *App) WhatTimeIsIt() MyThing {
+	return MyThing{
+		TimeStr: time.Now().Format(time.RFC3339),
+	}
 }

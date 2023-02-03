@@ -1,21 +1,25 @@
 <script lang="ts">
-  import logo from './assets/images/logo-universal.png'
-  import {Greet} from '../wailsjs/go/main/App.js'
+  import logo from './assets/images/dinkur-large-512.svg'
+  import {Greet, WhatTimeIsIt} from '../wailsjs/go/main/App.js'
 
   let resultText: string = "Please enter your name below 👇"
   let name: string
 
-  function greet(): void {
-    Greet(name).then(result => resultText = result)
+  async function greet(): Promise<void> {
+    resultText = await Greet(name);
+    let time = await WhatTimeIsIt();
+    resultText += "\nTime: " + time.time_str
   }
 </script>
 
 <main>
-  <img alt="Wails logo" id="logo" src="{logo}">
+  <img alt="Dinkur logo" id="logo" src="{logo}">
   <div class="result" id="result">{resultText}</div>
   <div class="input-box" id="input">
-    <input autocomplete="off" bind:value={name} class="input" id="name" type="text"/>
-    <button class="btn" on:click={greet}>Greet</button>
+    <form on:submit|preventDefault={greet}>
+      <input autocomplete="off" bind:value={name} class="input" id="name" type="text"/>
+      <button type="submit" class="btn">Greet</button>
+    </form>
   </div>
 </main>
 
@@ -25,8 +29,9 @@
     display: block;
     width: 50%;
     height: 50%;
+    max-height: 50vh;
     margin: auto;
-    padding: 10% 0 0;
+    padding: 10vh 0 0;
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -37,6 +42,7 @@
     height: 20px;
     line-height: 20px;
     margin: 1.5rem auto;
+    white-space: pre;
   }
 
   .input-box .btn {
