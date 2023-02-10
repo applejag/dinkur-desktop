@@ -1,13 +1,15 @@
 <script>
+	import '@skeletonlabs/skeleton/themes/theme-gold-nouveau.css';
+	import '@skeletonlabs/skeleton/styles/all.css';
+	import '../app.postcss';
 	import './styles.css';
+	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
 </script>
 
-<div class="app">
-	<header />
+<AppShell>
+	<svelte:fragment slot="header">
+		<AppBar>Dinkur</AppBar>
+	</svelte:fragment>
 
-	<main>
-		<slot />
-	</main>
-
-	<footer />
-</div>
+	<slot/>
+</AppShell>

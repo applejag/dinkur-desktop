@@ -16,12 +16,7 @@
 	color: var(--color-text);
 }
 
-html {
-    background-color: rgba(27, 38, 54, 1);
-    text-align: center;
-    color: white;
-}
-
+html,
 body {
-    margin: 0;
+	@apply h-full overflow-hidden;
 }

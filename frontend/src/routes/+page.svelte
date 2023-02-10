@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { ConnectDinkur, GetActiveEntry } from '$lib/wailsjs/go/main/App';
 	import logo from '../assets/images/dinkur-large-512.svg';
+	import { Avatar } from '@skeletonlabs/skeleton';
 
 	let resultText: string = 'Please enter your name below 👇';
 	let serverAddr: string = 'localhost:59122';
@@ -21,6 +22,22 @@
 	}
 </script>
 
+<div class="container mx-auto p-8 space-y-8">
+	<h1>Hello Skeleton</h1>
+	<p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+	<hr />
+	<section class="card p-4">
+		<p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+		<Avatar src="https://i.pravatar.cc/" />
+	</section>
+	<hr />
+	<section class="flex space-x-2">
+		<a class="btn variant-filled-primary" href="https://kit.svelte.dev/" target="_blank" rel="noreferrer">SvelteKit</a>
+		<a class="btn variant-filled-secondary" href="https://tailwindcss.com/" target="_blank" rel="noreferrer">Tailwind</a>
+		<a class="btn variant-filled-tertiary" href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+	</section>
+</div>
+
 <main>
 	<img alt="Dinkur logo" id="logo" src={logo} />
 	<div class="result" id="result">{resultText}</div>
@@ -32,66 +49,3 @@
 		</form>
 	</div>
 </main>
-
-<style>
-	main {
-		height: 100vh;
-		text-align: center;
-	}
-
-	#logo {
-		display: block;
-		width: 50%;
-		height: 50%;
-		max-height: 50vh;
-		margin: auto;
-		padding: 10vh 0 0;
-		background-position: center;
-		background-repeat: no-repeat;
-		background-size: 100% 100%;
-		background-origin: content-box;
-	}
-
-	.result {
-		height: 20px;
-		line-height: 20px;
-		margin: 1.5rem auto;
-		white-space: pre;
-	}
-
-	.input-box .btn {
-		height: 30px;
-		line-height: 30px;
-		border-radius: 3px;
-		border: none;
-		margin: 0 0 0 20px;
-		padding: 0 8px;
-		cursor: pointer;
-	}
-
-	.input-box .btn:hover {
-		background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
-		color: #333333;
-	}
-
-	.input-box .input {
-		border: none;
-		border-radius: 3px;
-		outline: none;
-		height: 30px;
-		line-height: 30px;
-		padding: 0 10px;
-		background-color: rgba(240, 240, 240, 1);
-		-webkit-font-smoothing: antialiased;
-	}
-
-	.input-box .input:hover {
-		border: none;
-		background-color: rgba(255, 255, 255, 1);
-	}
-
-	.input-box .input:focus {
-		border: none;
-		background-color: rgba(255, 255, 255, 1);
-	}
-</style>
