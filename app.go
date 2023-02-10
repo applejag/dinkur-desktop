@@ -4,14 +4,18 @@ import (
 	"context"
 	"fmt"
 
+	"fyne.io/systray"
 	"github.com/dinkur/dinkur/pkg/dinkur"
 	"github.com/dinkur/dinkur/pkg/dinkurclient"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
 type App struct {
 	ctx    context.Context
 	dinkur dinkur.Client
+
+	trayCheckOut *systray.MenuItem
 }
 
 // NewApp creates a new App application struct
@@ -19,17 +23,38 @@ func NewApp() *App {
 	return &App{}
 }
 
-// startup is called when the app starts. The context is saved
+// onStartup is called when the app starts. The context is saved
 // so we can call the runtime methods
-func (a *App) startup(ctx context.Context) {
+func (a *App) onStartup(ctx context.Context) {
+	systray.Run(a.onSystrayReady, a.onSystrayExit)
 	a.ctx = ctx
 }
 
-func (a *App) shutdown(ctx context.Context) {
+func (a *App) onShutdown(ctx context.Context) {
+	systray.Quit()
 	if a.dinkur != nil {
 		a.dinkur.Close()
 		a.dinkur = nil
 	}
+}
+
+func (a *App) onSystrayReady() {
+	systray.SetTemplateIcon(iconBytes, iconBytes)
+	systray.SetTitle("Dinkur desktop")
+	systray.SetTooltip("Placeholder tooltip")
+
+	a.trayCheckOut = systray.AddMenuItem("No active entry", "You have no active entry tracking time right now.")
+	a.trayCheckOut.Disable()
+	systray.AddSeparator()
+	menuQuit := systray.AddMenuItem("Quit Dinkur", "Exits Dinkur desktop")
+	go func() {
+		<-menuQuit.ClickedCh
+		systray.Quit()
+	}()
+}
+
+func (a *App) onSystrayExit() {
+	runtime.Quit(a.ctx)
 }
 
 // Greet returns a greeting for the given name

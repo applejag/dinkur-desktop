@@ -3,6 +3,7 @@ module github.com/jilleJr/dinkur-desktop
 go 1.20
 
 require (
+	fyne.io/systray v1.10.0
 	github.com/dinkur/dinkur v0.0.0-20230203172540-e4f236235ff7
 	github.com/wailsapp/wails/v2 v2.3.1
 )
@@ -10,6 +11,7 @@ require (
 require (
 	github.com/bep/debounce v1.2.1 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
+	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
@@ -27,6 +29,7 @@ require (
 	github.com/pkg/browser v0.0.0-20210706143420-7d21f8c997e2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/samber/lo v1.27.1 // indirect
+	github.com/tevino/abool v1.2.0 // indirect
 	github.com/tkrajina/go-reflector v0.5.5 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
