@@ -19,7 +19,7 @@ func main() {
 	err := wails.Run(&options.App{
 		Title:  "dinkur-desktop",
 		Width:  480,
-		Height: 360,
+		Height: 640,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
