@@ -1,4 +1,5 @@
 <script>
+	import 'carbon-components-svelte/css/g80.css';
 	import './styles.css';
 </script>
 
