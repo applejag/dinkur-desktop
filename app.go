@@ -26,8 +26,8 @@ func NewApp() *App {
 // onStartup is called when the app starts. The context is saved
 // so we can call the runtime methods
 func (a *App) onStartup(ctx context.Context) {
-	systray.Run(a.onSystrayReady, a.onSystrayExit)
 	a.ctx = ctx
+	systray.Run(a.onSystrayReady, a.onSystrayExit)
 }
 
 func (a *App) onShutdown(ctx context.Context) {
@@ -45,11 +45,18 @@ func (a *App) onSystrayReady() {
 
 	a.trayCheckOut = systray.AddMenuItem("No active entry", "You have no active entry tracking time right now.")
 	a.trayCheckOut.Disable()
+	menuShow := systray.AddMenuItem("Show Dinkur", "Opens Dinkur when it has been hidden/closed.")
+	go func() {
+		for range menuShow.ClickedCh {
+			runtime.Show(a.ctx)
+		}
+	}()
 	systray.AddSeparator()
 	menuQuit := systray.AddMenuItem("Quit Dinkur", "Exits Dinkur desktop")
 	go func() {
-		<-menuQuit.ClickedCh
-		systray.Quit()
+		if _, ok := <-menuQuit.ClickedCh; ok {
+			systray.Quit()
+		}
 	}()
 }
 

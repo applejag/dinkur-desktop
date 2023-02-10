@@ -36,6 +36,7 @@ func main() {
 		Linux: &linux.Options{
 			Icon: iconBytes,
 		},
+		HideWindowOnClose: true,
 	})
 
 	if err != nil {
