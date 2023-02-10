@@ -6,10 +6,14 @@ import (
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/options/linux"
 )
 
 //go:embed all:frontend/build
 var assets embed.FS
+
+//go:embed docs/dinkur-small-64.png
+var iconBytes []byte
 
 func main() {
 	// Create an instance of the app structure
@@ -17,7 +21,7 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "dinkur-desktop",
+		Title:  "Dinkur desktop",
 		Width:  480,
 		Height: 640,
 		AssetServer: &assetserver.Options{
@@ -28,6 +32,9 @@ func main() {
 		OnShutdown:       app.shutdown,
 		Bind: []interface{}{
 			app,
+		},
+		Linux: &linux.Options{
+			Icon: iconBytes,
 		},
 	})
 
