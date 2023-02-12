@@ -12,6 +12,7 @@ import (
 	"github.com/dinkur/dinkur/pkg/dinkurclient"
 	"github.com/iver-wharf/wharf-core/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2"
+	wailslogger "github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/linux"
@@ -43,8 +44,10 @@ func Run(cfg *config.Config) error {
 		Linux: &linux.Options{
 			Icon: IconBytes,
 		},
-		HideWindowOnClose: !cfg.ExitOnWindowClose,
-		Logger:            wailsutil.Logger{WharfLogger: logger.NewScoped("Wails")},
+		HideWindowOnClose:  !cfg.ExitOnWindowClose,
+		Logger:             wailsutil.Logger{WharfLogger: logger.NewScoped("Wails")},
+		LogLevel:           wailslogger.DEBUG,
+		LogLevelProduction: wailslogger.INFO,
 	})
 }
 
