@@ -9,7 +9,3 @@ export function ConnectDinkur(arg1) {
 export function GetActiveEntry() {
   return window['go']['main']['App']['GetActiveEntry']();
 }
-
-export function Greet(arg1) {
-  return window['go']['main']['App']['Greet'](arg1);
-}

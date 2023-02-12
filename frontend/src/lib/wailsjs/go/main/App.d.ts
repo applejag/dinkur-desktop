@@ -5,5 +5,3 @@ import {dinkur} from '../models';
 export function ConnectDinkur(arg1:string):Promise<void>;
 
 export function GetActiveEntry():Promise<dinkur.Entry>;
-
-export function Greet(arg1:string):Promise<string>;
