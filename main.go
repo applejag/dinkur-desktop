@@ -12,7 +12,7 @@ import (
 //go:embed all:frontend/build
 var assets embed.FS
 
-//go:embed docs/dinkur-small-64.png
+//go:embed icons/dinkur-small-64.png
 var iconBytes []byte
 
 func main() {

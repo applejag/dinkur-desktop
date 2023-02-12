@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Dinkur desktop
+GenericName=Time tracker
+Exec=dinkur-desktop
+Terminal=false
+Categories=Utility
+Icon=dinkur-small
