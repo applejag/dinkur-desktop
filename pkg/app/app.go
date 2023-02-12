@@ -6,9 +6,11 @@ import (
 	"fmt"
 
 	"fyne.io/systray"
+	"github.com/dinkur/dinkur-desktop/internal/wailsutil"
 	"github.com/dinkur/dinkur-desktop/pkg/config"
 	"github.com/dinkur/dinkur/pkg/dinkur"
 	"github.com/dinkur/dinkur/pkg/dinkurclient"
+	"github.com/iver-wharf/wharf-core/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
@@ -19,8 +21,10 @@ import (
 var Assets embed.FS
 var IconBytes []byte
 
+var log = logger.NewScoped("app")
+
 func Run(cfg *config.Config) error {
-	app := New()
+	app := New(cfg)
 
 	// Create application with options
 	return wails.Run(&options.App{
@@ -40,11 +44,13 @@ func Run(cfg *config.Config) error {
 			Icon: IconBytes,
 		},
 		HideWindowOnClose: !cfg.ExitOnWindowClose,
+		Logger:            wailsutil.Logger{WharfLogger: logger.NewScoped("Wails")},
 	})
 }
 
 // App struct
 type App struct {
+	cfg    *config.Config
 	ctx    context.Context
 	dinkur dinkur.Client
 
@@ -52,8 +58,8 @@ type App struct {
 }
 
 // New creates a new App application struct
-func New() *App {
-	return &App{}
+func New(cfg *config.Config) *App {
+	return &App{cfg: cfg}
 }
 
 // onStartup is called when the app starts. The context is saved
@@ -64,9 +70,14 @@ func (a *App) onStartup(ctx context.Context) {
 }
 
 func (a *App) onShutdown(ctx context.Context) {
+	if err := a.cfg.Save(); err != nil {
+		log.Error().WithError(err).Message("Failed to save config before exiting.")
+	}
 	systray.Quit()
 	if a.dinkur != nil {
-		a.dinkur.Close()
+		if err := a.dinkur.Close(); err != nil {
+			log.Error().WithError(err).Message("Failed to close connection to Dinkur database.")
+		}
 		a.dinkur = nil
 	}
 }

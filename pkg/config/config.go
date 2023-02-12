@@ -79,7 +79,7 @@ func init() {
 type Config struct {
 	fileUsed string
 
-	ExitOnWindowClose bool
+	ExitOnWindowClose bool `yaml:"exitOnWindowClose"`
 
 	Client ClientType
 	Sqlite Sqlite
@@ -112,7 +112,7 @@ type Daemon struct {
 	Enabled bool
 	// BindAddress defines which IP/hostname and port to serve the gRPC API on.
 	// Can be set to 0.0.0.0 as IP to allow access from any IP.
-	BindAddress string
+	BindAddress string `yaml:"bindAddress"`
 }
 
 type Log struct {
