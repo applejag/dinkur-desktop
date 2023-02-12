@@ -64,11 +64,6 @@ func (a *App) onSystrayExit() {
 	runtime.Quit(a.ctx)
 }
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's crazy time!", name)
-}
-
 // // ConnectDinkur tries to connect to a Dinkur daemon over gRPC
 func (a *App) ConnectDinkur(serverAddr string) error {
 	if a.dinkur != nil {
