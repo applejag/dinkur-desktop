@@ -1,14 +1,47 @@
-package main
+package app
 
 import (
 	"context"
+	"embed"
 	"fmt"
 
 	"fyne.io/systray"
+	"github.com/dinkur/dinkur-desktop/pkg/config"
 	"github.com/dinkur/dinkur/pkg/dinkur"
 	"github.com/dinkur/dinkur/pkg/dinkurclient"
+	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/options"
+	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/options/linux"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
+
+var Assets embed.FS
+var IconBytes []byte
+
+func Run(cfg *config.Config) error {
+	app := New()
+
+	// Create application with options
+	return wails.Run(&options.App{
+		Title:  "Dinkur desktop",
+		Width:  480,
+		Height: 640,
+		AssetServer: &assetserver.Options{
+			Assets: Assets,
+		},
+		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
+		OnStartup:        app.onStartup,
+		OnShutdown:       app.onShutdown,
+		Bind: []interface{}{
+			app,
+		},
+		Linux: &linux.Options{
+			Icon: IconBytes,
+		},
+		HideWindowOnClose: !cfg.ExitOnWindowClose,
+	})
+}
 
 // App struct
 type App struct {
@@ -18,8 +51,8 @@ type App struct {
 	trayCheckOut *systray.MenuItem
 }
 
-// NewApp creates a new App application struct
-func NewApp() *App {
+// New creates a new App application struct
+func New() *App {
 	return &App{}
 }
 
@@ -39,7 +72,7 @@ func (a *App) onShutdown(ctx context.Context) {
 }
 
 func (a *App) onSystrayReady() {
-	systray.SetTemplateIcon(iconBytes, iconBytes)
+	systray.SetTemplateIcon(IconBytes, IconBytes)
 	systray.SetTitle("Dinkur desktop")
 	systray.SetTooltip("Placeholder tooltip")
 

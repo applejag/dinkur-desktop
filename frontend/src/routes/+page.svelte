@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ConnectDinkur, GetActiveEntry } from '$lib/wailsjs/go/main/App';
+	import { ConnectDinkur, GetActiveEntry } from '$lib/wailsjs/go/app/App';
 	import { Avatar } from '@skeletonlabs/skeleton';
 
 	let resultVariant: string = 'variant-ghost-surface'
