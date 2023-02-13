@@ -2,15 +2,11 @@ export namespace dinkur {
 	
 	export class Entry {
 	    id: number;
-	    // Go type: time.Time
-	    createdAt: any;
-	    // Go type: time.Time
-	    updatedAt: any;
+	    createdAt: time.Time;
+	    updatedAt: time.Time;
 	    name: string;
-	    // Go type: time.Time
-	    start: any;
-	    // Go type: time.Time
-	    end?: any;
+	    start: time.Time;
+	    end?: time.Time;
 	
 	    static createFrom(source: any = {}) {
 	        return new Entry(source);
@@ -19,11 +15,11 @@ export namespace dinkur {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.id = source["id"];
-	        this.createdAt = this.convertValues(source["createdAt"], null);
-	        this.updatedAt = this.convertValues(source["updatedAt"], null);
+	        this.createdAt = this.convertValues(source["createdAt"], time.Time);
+	        this.updatedAt = this.convertValues(source["updatedAt"], time.Time);
 	        this.name = source["name"];
-	        this.start = this.convertValues(source["start"], null);
-	        this.end = this.convertValues(source["end"], null);
+	        this.start = this.convertValues(source["start"], time.Time);
+	        this.end = this.convertValues(source["end"], time.Time);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

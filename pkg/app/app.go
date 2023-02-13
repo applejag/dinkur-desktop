@@ -4,12 +4,14 @@ import (
 	"context"
 	"embed"
 	"fmt"
+	"time"
 
 	"fyne.io/systray"
 	"github.com/dinkur/dinkur-desktop/internal/wailsutil"
 	"github.com/dinkur/dinkur-desktop/pkg/config"
 	"github.com/dinkur/dinkur/pkg/dinkur"
-	"github.com/dinkur/dinkur/pkg/dinkurclient"
+	"github.com/dinkur/dinkur/pkg/dinkurdb"
+	"github.com/dinkur/dinkur/pkg/timeutil"
 	"github.com/iver-wharf/wharf-core/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2"
 	wailslogger "github.com/wailsapp/wails/v2/pkg/logger"
@@ -22,7 +24,7 @@ import (
 var Assets embed.FS
 var IconBytes []byte
 
-var log = logger.NewScoped("app")
+var log = logger.NewScoped("Dinkur desktop")
 
 func Run(cfg *config.Config) error {
 	app := New(cfg)
@@ -62,14 +64,21 @@ type App struct {
 
 // New creates a new App application struct
 func New(cfg *config.Config) *App {
-	return &App{cfg: cfg}
+	opt := dinkurdb.Options{
+		MkdirAll: cfg.Sqlite.Mkdir,
+	}
+	return &App{
+		cfg:    cfg,
+		dinkur: dinkurdb.NewClient(cfg.Sqlite.Path, opt),
+	}
 }
 
 // onStartup is called when the app starts. The context is saved
 // so we can call the runtime methods
 func (a *App) onStartup(ctx context.Context) {
 	a.ctx = ctx
-	systray.Run(a.onSystrayReady, a.onSystrayExit)
+	go systray.Run(a.onSystrayReady, a.onSystrayExit)
+	a.ConnectDinkur()
 }
 
 func (a *App) onShutdown(ctx context.Context) {
@@ -77,12 +86,7 @@ func (a *App) onShutdown(ctx context.Context) {
 		log.Error().WithError(err).Message("Failed to save config before exiting.")
 	}
 	systray.Quit()
-	if a.dinkur != nil {
-		if err := a.dinkur.Close(); err != nil {
-			log.Error().WithError(err).Message("Failed to close connection to Dinkur database.")
-		}
-		a.dinkur = nil
-	}
+	a.DisconnectDinkur()
 }
 
 func (a *App) onSystrayReady() {
@@ -111,26 +115,45 @@ func (a *App) onSystrayExit() {
 	runtime.Quit(a.ctx)
 }
 
-// // ConnectDinkur tries to connect to a Dinkur daemon over gRPC
-func (a *App) ConnectDinkur(serverAddr string) error {
-	if a.dinkur != nil {
-		a.dinkur.Close()
-	}
-	a.dinkur = dinkurclient.NewClient(serverAddr, dinkurclient.Options{})
-	fmt.Println("Connecting to:", serverAddr)
+func (a *App) ConnectDinkur() error {
 	if err := a.dinkur.Connect(a.ctx); err != nil {
-		a.dinkur = nil
+		log.Error().WithError(err).Message("Failed to connect to Dinkur database.")
 		return err
 	}
 	if err := a.dinkur.Ping(a.ctx); err != nil {
+		log.Error().WithError(err).Message("Failed to ping Dinkur database.")
 		a.dinkur.Close()
-		a.dinkur = nil
 		return fmt.Errorf("ping: %w", err)
 	}
-	fmt.Println("Successfully connected:", serverAddr)
+	log.Info().Message("Successfully connected to Dinkur!")
 	return nil
+}
+
+func (a *App) DisconnectDinkur() error {
+	err := a.dinkur.Close()
+	if err != nil {
+		log.Error().WithError(err).Message("Failed to close connection to Dinkur database.")
+	}
+	return err
 }
 
 func (a *App) GetActiveEntry() (*dinkur.Entry, error) {
 	return a.dinkur.GetActiveEntry(a.ctx)
+}
+
+func (a *App) GetEntriesForDay(day time.Time) ([]dinkur.Entry, error) {
+	span := timeutil.Day(day)
+	log.Debug().WithString("day", day.Format(time.DateOnly)).
+		WithTime("start", *span.Start).
+		WithTime("end", *span.End).
+		Message("Getting entries for day.")
+	entries, err := a.dinkur.GetEntryList(context.Background(), dinkur.SearchEntry{
+		Limit: 100,
+		Start: span.Start,
+		End:   span.End,
+	})
+	log.Debug().WithError(err).
+		WithInt("count", len(entries)).
+		Message("Got entries response.")
+	return entries, err
 }

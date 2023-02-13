@@ -63,7 +63,7 @@ var Default = Config{
 	},
 	Log: Log{
 		Format: LogFormatPretty,
-		Level:  LogLevel(logger.LevelInfo),
+		Level:  LogLevel(logger.LevelDebug),
 		Color:  LogColorAuto,
 	},
 }
